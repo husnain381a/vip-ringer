@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="VIP Ringer lets you silence all calls except your VIP contacts. Only selected calls ring through even in Silent, Vibrate, or Do Not Disturb mode, helping you stay focused while never missing what matters.">
+<meta name="keywords" content="VIP Ringer, call filter, selected calls, do not disturb, VIP contacts, phone ringer, call management, focus mode, important calls only">
+<title>VIP Ringer | Selected Calls Only</title>
+<link rel="icon" type="image/svg+xml" href="https://res.cloudinary.com/dxekyuabh/image/upload/v1773227487/Untitled_design_19_meiwrm.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Figtree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080514;
+  --bg2: #0e0920;
+  --bg3: #120c28;
+  --purple: #6b21e8;
+  --purple-mid: #8b3cf7;
+  --purple-light: #a855f7;
+  --gold: #d4a017;
+  --gold-light: #e8b84b;
+  --gold-pale: #f5d47a;
+  --white: #f8f6ff;
+  --muted: rgba(248,246,255,0.55);
+  --faint: rgba(248,246,255,0.08);
+  --border: rgba(248,246,255,0.1);
+  --border-gold: rgba(212,160,23,0.3);
+  --radius: 16px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Figtree', sans-serif;
+  background: var(--bg);
+  color: var(--white);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 4px; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5vw; height: 68px;
+  background: rgba(8,5,20,0.92);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+}
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-mark {
+  width: 42px; height: 42px;
+  background: linear-gradient(140deg, var(--purple) 0%, var(--purple-light) 100%);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-mark svg { width: 18px; height: 18px; }
+.logo-mark img { width: 100%; height: 100%; object-fit: contain; border-radius: 9px; }
+.logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-weight: 400; font-size: 1.4rem; letter-spacing: 0.1em; color: var(--white);
+}
+.logo-text em { color: var(--gold-light); font-style: normal; }
+nav ul { list-style: none; display: flex; align-items: center; gap: 36px; }
+nav ul a {
+  text-decoration: none; color: var(--muted);
+  font-size: 0.85rem; font-weight: 500; letter-spacing: 0.02em;
+  transition: color 0.2s;
+}
+nav ul a:hover { color: var(--white); }
+.btn-nav {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%) !important;
+  color: #140800 !important; font-weight: 700 !important;
+  padding: 9px 22px !important; border-radius: 8px;
+  transition: opacity 0.2s, transform 0.2s !important;
+}
+.btn-nav:hover { opacity: 0.9; transform: translateY(-1px) !important; color: #140800 !important; }
+
+/* HERO */
+#hero {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 100px 5vw 80px;
+  position: relative; overflow: hidden; text-align: center;
+}
+.hero-bg { position: absolute; inset: 0; pointer-events: none; }
+.orb1 {
+  position: absolute; width: 700px; height: 700px; border-radius: 50%;
+  top: -200px; left: 50%; transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(107,33,232,0.28) 0%, transparent 70%);
+}
+.orb2 {
+  position: absolute; width: 400px; height: 400px; border-radius: 50%;
+  bottom: 0; right: 5%;
+  background: radial-gradient(circle, rgba(212,160,23,0.1) 0%, transparent 70%);
+}
+.bg-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--faint) 1px, transparent 1px),
+    linear-gradient(90deg, var(--faint) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 40%, black 20%, transparent 100%);
+}
+.hero-inner { position: relative; z-index: 1; max-width: 760px; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--border-gold);
+  background: rgba(212,160,23,0.07);
+  border-radius: 50px; padding: 5px 16px 5px 10px;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--gold-light);
+  margin-bottom: 40px;
+  animation: rise 0.9s ease both;
+}
+.hero-eyebrow svg { width: 14px; height: 14px; }
+h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(4.5rem, 10vw, 8rem);
+  font-weight: 400; line-height: 0.92;
+  letter-spacing: 0.06em;
+  animation: rise 0.9s 0.1s ease both;
+}
+h1 em { color: var(--gold-light); font-style: normal; }
+h1 .sub {
+  display: block; color: var(--muted);
+  font-size: 0.48em; font-weight: 400; letter-spacing: 0.1em; margin-top: 12px;
+}
+.hero-desc {
+  font-size: 1.05rem; color: var(--muted); font-weight: 300;
+  max-width: 520px; margin: 28px auto 48px; line-height: 1.8;
+  animation: rise 0.9s 0.22s ease both;
+}
+.hero-actions {
+  display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;
+  animation: rise 0.9s 0.34s ease both;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+  color: #140800; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.02em;
+  padding: 14px 30px; border-radius: 10px; text-decoration: none;
+  box-shadow: 0 4px 28px rgba(212,160,23,0.28);
+  transition: transform 0.22s, box-shadow 0.22s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(212,160,23,0.4); }
+.btn-primary svg { width: 16px; height: 16px; }
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 9px;
+  border: 1px solid var(--border); color: var(--white);
+  font-size: 0.9rem; font-weight: 500;
+  padding: 14px 30px; border-radius: 10px; text-decoration: none;
+  transition: border-color 0.22s, background 0.22s, transform 0.22s;
+}
+.btn-outline:hover { border-color: rgba(248,246,255,0.3); background: var(--faint); transform: translateY(-2px); }
+.btn-outline svg { width: 16px; height: 16px; }
+.hero-metrics {
+  display: flex; justify-content: center; gap: 56px; margin-top: 72px;
+  padding-top: 40px; border-top: 1px solid var(--border);
+  animation: rise 0.9s 0.46s ease both;
+}
+.metric-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.4rem; font-weight: 400; color: var(--gold-light); line-height: 1;
+  letter-spacing: 0.06em;
+}
+.metric-label {
+  font-size: 0.72rem; color: var(--muted); letter-spacing: 0.1em;
+  text-transform: uppercase; margin-top: 6px;
+}
+
+/* SECTION BASE */
+section { padding: 110px 5vw; }
+.section-tag {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 18px;
+}
+.section-tag::after {
+  content: ''; height: 1px; max-width: 40px; background: rgba(212,160,23,0.4); flex-shrink: 0;
+  display: block; width: 40px;
+}
+h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+  font-weight: 400; line-height: 1.0; letter-spacing: 0.05em;
+}
+
+/* HOW IT WORKS */
+#how {
+  background: var(--bg2);
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.how-header { text-align: center; max-width: 540px; margin: 0 auto 72px; }
+.how-header .section-tag { justify-content: center; }
+.how-header p { color: var(--muted); margin-top: 14px; font-size: 0.95rem; font-weight: 300; }
+.steps-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 0; max-width: 1200px; margin: 0 auto; position: relative;
+}
+.steps-grid::before {
+  content: '';
+  position: absolute; top: 34px; left: calc(12.5% + 10px); right: calc(12.5% + 10px); height: 1px;
+  background: linear-gradient(to right, transparent, var(--border-gold), var(--border-gold), transparent);
+}
+.step {
+  text-align: center; padding: 0 20px;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.step.show { opacity: 1; transform: none; }
+.step:nth-child(2) { transition-delay: 0.1s; }
+.step:nth-child(3) { transition-delay: 0.2s; }
+.step:nth-child(4) { transition-delay: 0.3s; }
+.step:nth-child(5) { transition-delay: 0.4s; }
+.step-circle {
+  width: 68px; height: 68px; border-radius: 50%;
+  margin: 0 auto 24px;
+  background: var(--bg3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; z-index: 1;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.step:hover .step-circle { border-color: var(--border-gold); box-shadow: 0 0 28px rgba(107,33,232,0.4); }
+.step-circle svg { width: 26px; height: 26px; color: var(--purple-light); }
+.step-num {
+  position: absolute; top: -6px; right: -6px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--gold); color: #1a0800;
+  font-size: 0.6rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+}
+.step h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; font-weight: 400; letter-spacing: 0.08em; margin-bottom: 10px; }
+.step p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+
+/* FEATURES */
+#features { position: relative; overflow: hidden; }
+#features::after {
+  content: '';
+  position: absolute; width: 600px; height: 600px; border-radius: 50%;
+  top: 50%; right: -150px; transform: translateY(-50%);
+  background: radial-gradient(circle, rgba(107,33,232,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.features-layout {
+  display: grid; grid-template-columns: 320px 1fr;
+  gap: 80px; align-items: start; max-width: 1100px; margin: 0 auto;
+}
+.features-intro p { color: var(--muted); margin-top: 16px; font-size: 0.93rem; font-weight: 300; line-height: 1.8; }
+.feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.feat-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 28px;
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.3s, box-shadow 0.3s;
+}
+.feat-card.show { opacity: 1; transform: none; }
+.feat-card:nth-child(2) { transition-delay: 0.08s; }
+.feat-card:nth-child(3) { transition-delay: 0.16s; }
+.feat-card:nth-child(4) { transition-delay: 0.24s; }
+.feat-card:nth-child(5) { transition-delay: 0.32s; }
+.feat-card:nth-child(6) { transition-delay: 0.4s; }
+.feat-card:hover { border-color: rgba(107,33,232,0.4); transform: translateY(-3px) !important; box-shadow: 0 12px 40px rgba(107,33,232,0.15); }
+.feat-icon-wrap {
+  width: 44px; height: 44px; border-radius: 11px;
+  background: rgba(107,33,232,0.15); border: 1px solid rgba(107,33,232,0.25);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 18px;
+}
+.feat-icon-wrap svg { width: 20px; height: 20px; color: var(--purple-light); }
+.feat-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; font-weight: 400; letter-spacing: 0.08em; margin-bottom: 8px; }
+.feat-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.7; }
+
+/* PREVIEW */
+#preview {
+  background: var(--bg2);
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  display: grid; grid-template-columns: 1fr 440px;
+  gap: 80px; align-items: center;
+}
+.preview-text h2 { margin-bottom: 14px; }
+.preview-text p { color: var(--muted); font-weight: 300; line-height: 1.8; font-size: 0.93rem; margin-bottom: 36px; }
+.check-list { display: flex; flex-direction: column; gap: 14px; }
+.check-item { display: flex; align-items: flex-start; gap: 12px; }
+.check-icon {
+  width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; margin-top: 2px;
+  background: rgba(107,33,232,0.2); border: 1px solid rgba(107,33,232,0.3);
+  display: flex; align-items: center; justify-content: center;
+}
+.check-icon svg { width: 12px; height: 12px; color: var(--purple-light); }
+.check-item strong { font-size: 0.88rem; font-weight: 600; display: block; }
+.check-item span { font-size: 0.8rem; color: var(--muted); }
+
+/* Phone mockup */
+.phone-scene { display: flex; justify-content: center; position: relative; }
+.phone-scene::before {
+  content: '';
+  position: absolute; width: 280px; height: 280px; border-radius: 50%;
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  background: radial-gradient(circle, rgba(107,33,232,0.3) 0%, transparent 70%);
+  filter: blur(20px);
+}
+.phone {
+  width: 230px; background: #111118; border-radius: 40px;
+  border: 2px solid #252535; padding: 12px;
+  box-shadow: 0 0 0 1px #1a1a2a, 0 40px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
+  position: relative; z-index: 1;
+}
+.phone-island { width: 90px; height: 26px; background: #000; border-radius: 14px; margin: 0 auto 10px; }
+.pscreen {
+  background: linear-gradient(175deg, #130a2e 0%, #080414 100%);
+  border-radius: 28px; overflow: hidden; padding: 16px 14px; min-height: 360px;
+}
+.ps-nav {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+}
+.ps-nav-icon {
+  width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+}
+.ps-nav-icon svg { width: 12px; height: 12px; color: rgba(255,255,255,0.5); }
+.ps-app-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 10px; font-weight: 400; letter-spacing: 0.12em; color: var(--gold-light);
+}
+.ps-bell-wrap { display: flex; justify-content: center; margin-bottom: 14px; }
+.ps-bell {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(140deg, var(--purple) 0%, var(--purple-light) 100%);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 30px rgba(107,33,232,0.6);
+  animation: bellglow 2.8s ease-in-out infinite;
+}
+.ps-bell svg { width: 28px; height: 28px; color: #fff; }
+@keyframes bellglow {
+  0%,100% { box-shadow: 0 0 30px rgba(107,33,232,0.6); }
+  50% { box-shadow: 0 0 50px rgba(107,33,232,0.9), 0 0 70px rgba(212,160,23,0.15); }
+}
+.ps-status { text-align: center; margin-bottom: 14px; }
+.ps-status-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(107,33,232,0.2); border: 1px solid rgba(107,33,232,0.3);
+  border-radius: 50px; padding: 3px 10px;
+  font-size: 7px; font-weight: 700; letter-spacing: 0.08em; color: var(--purple-light);
+}
+.ps-dot { width: 5px; height: 5px; border-radius: 50%; background: #4ade80; animation: blink 1.5s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.ps-list { display: flex; flex-direction: column; gap: 6px; }
+.ps-row {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 9px; padding: 7px 9px;
+}
+.ps-ava {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+}
+.ps-info { flex: 1; }
+.ps-info strong { display: block; font-size: 8px; color: var(--white); font-weight: 600; }
+.ps-info small { font-size: 6.5px; color: rgba(255,255,255,0.4); }
+.ps-vip {
+  display: flex; align-items: center; gap: 3px;
+  background: rgba(212,160,23,0.12); border: 1px solid rgba(212,160,23,0.3);
+  border-radius: 4px; padding: 2px 5px;
+  font-size: 5.5px; font-weight: 800; color: var(--gold-light); letter-spacing: 0.06em; text-transform: uppercase;
+}
+.ps-vip svg { width: 6px; height: 6px; }
+.ps-muted { font-size: 5.5px; color: rgba(255,255,255,0.25); font-weight: 500; }
+
+/* FAQ */
+#faq { max-width: 720px; margin: 0 auto; text-align: center; }
+#faq h2 { margin-bottom: 12px; }
+#faq > p { color: var(--muted); margin-bottom: 52px; font-size: 0.93rem; }
+.faq-wrap { text-align: left; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-trigger {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; background: none; border: none; color: var(--white);
+  padding: 20px 0; cursor: pointer; text-align: left; gap: 16px;
+  font-family: 'Figtree', sans-serif; font-size: 0.93rem; font-weight: 600;
+}
+.faq-trigger:hover { color: var(--gold-light); }
+.faq-chevron {
+  flex-shrink: 0; width: 28px; height: 28px;
+  border: 1px solid var(--border); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.35s, border-color 0.2s, background 0.2s;
+}
+.faq-chevron svg { width: 12px; height: 12px; color: var(--muted); transition: color 0.2s; }
+.faq-item.open .faq-chevron { transform: rotate(180deg); border-color: var(--border-gold); background: rgba(212,160,23,0.1); }
+.faq-item.open .faq-chevron svg { color: var(--gold-light); }
+.faq-body { max-height: 0; overflow: hidden; transition: max-height 0.42s cubic-bezier(0.4,0,0.2,1); }
+.faq-item.open .faq-body { max-height: 240px; }
+.faq-body p { font-size: 0.87rem; color: var(--muted); line-height: 1.78; padding-bottom: 20px; }
+
+/* DOWNLOAD */
+#download { text-align: center; position: relative; overflow: hidden; }
+#download::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 55% 55% at 50% 50%, rgba(107,33,232,0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 25% 25% at 50% 50%, rgba(212,160,23,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.download-inner { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+.download-inner .section-tag { justify-content: center; }
+#download h2 { font-size: clamp(3rem, 6vw, 5rem); letter-spacing: 0.05em; margin-bottom: 16px; }
+.download-inner > p { color: var(--muted); margin-bottom: 52px; font-size: 0.95rem; font-weight: 300; line-height: 1.75; }
+.store-btns { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+.store-btn {
+  display: inline-flex; align-items: center; gap: 14px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 22px;
+  text-decoration: none; color: var(--white); min-width: 172px;
+  transition: border-color 0.25s, background 0.25s, transform 0.25s;
+}
+.store-btn:hover { border-color: rgba(248,246,255,0.25); background: rgba(255,255,255,0.07); transform: translateY(-2px); }
+.store-btn svg { width: 28px; height: 28px; flex-shrink: 0; }
+.sb-text small { display: block; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.04em; }
+.sb-text strong { font-size: 0.95rem; font-weight: 400; font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.06em; }
+.apk-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--muted); font-size: 0.82rem; text-decoration: none;
+  margin-top: 28px; border-bottom: 1px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+.apk-link:hover { color: var(--gold-light); border-color: var(--border-gold); }
+.apk-link svg { width: 14px; height: 14px; }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 36px 5vw;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 20px; background: var(--bg);
+}
+.foot-left { display: flex; align-items: center; gap: 20px; }
+footer p { font-size: 0.75rem; color: rgba(248,246,255,0.3); }
+.foot-links { display: flex; gap: 24px; }
+.foot-links a { font-size: 0.75rem; color: rgba(248,246,255,0.4); text-decoration: none; transition: color 0.2s; }
+.foot-links a:hover { color: var(--gold-light); }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: linear-gradient(135deg, var(--purple) 0%, var(--purple-mid) 100%);
+  color: var(--white); font-size: 0.9rem; font-weight: 600;
+  padding: 14px 32px; border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(107,33,232,0.4);
+  opacity: 0; pointer-events: none; z-index: 9999;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.toast.show {
+  opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto;
+}
+
+/* SCROLL TO TOP */
+.scroll-top {
+  position: fixed; bottom: 60px; right: 32px; z-index: 9998;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(212,160,23,0.35);
+  opacity: 0; transform: translateY(12px); pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.scroll-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.scroll-top:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(212,160,23,0.5); }
+.scroll-top svg { width: 20px; height: 20px; color: #140800; }
+
+/* ANIMATIONS */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .features-layout { grid-template-columns: 1fr; gap: 40px; }
+  #preview { grid-template-columns: 1fr; gap: 48px; }
+  .steps-grid { grid-template-columns: 1fr 1fr; }
+  .steps-grid::before { display: none; }
+  nav ul li:not(:last-child) { display: none; }
+}
+@media (max-width: 600px) {
+  .hero-metrics { flex-direction: column; gap: 24px; align-items: center; }
+  .metric { text-align: center; }
+  .steps-grid { grid-template-columns: 1fr; gap: 32px; }
+  .feat-grid { grid-template-columns: 1fr; }
+  footer { flex-direction: column; align-items: center; text-align: center; padding: 28px 5vw; gap: 16px; }
+  .foot-left { flex-direction: column; align-items: center; gap: 12px; }
+  .foot-links { justify-content: center; flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-mark">
+      <img src="https://res.cloudinary.com/dxekyuabh/image/upload/v1773227487/Untitled_design_19_meiwrm.png" alt="VIP Ringer Logo">
+    </div>
+    <span class="logo-text"><em>VIP</em> Ringer</span>
+  </a>
+  <ul>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#download" class="btn-nav">Download</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg">
+    <div class="orb1"></div>
+    <div class="orb2"></div>
+    <div class="bg-grid"></div>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Selected Calls Only
+    </div>
+    <h1>
+      <em>VIP</em> Ringer
+      <span class="sub">Your silence. Their ring.</span>
+    </h1>
+    <p class="hero-desc">Stay silent for the world. Stay reachable for the people who truly matter. VIP Ringer lets selected contacts ring at full volume even when your phone is on Silent, Vibrate or Do Not Disturb.</p>
+    <div class="hero-actions">
+      <a href="#download" class="btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Free
+      </a>
+      <a href="#how" class="btn-outline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+        See How It Works
+      </a>
+    </div>
+    <div class="hero-metrics">
+      <div class="metric">
+        <div class="metric-num">100%</div>
+        <div class="metric-label">Free Forever</div>
+      </div>
+      <div class="metric">
+        <div class="metric-num">No</div>
+        <div class="metric-label">Ads & Tracking</div>
+      </div>
+      <div class="metric">
+        <div class="metric-num">Zero</div>
+        <div class="metric-label">Data Collected</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="how-header">
+    <div class="section-tag" style="justify-content:center;">How It Works</div>
+    <h2>Set up in under two minutes</h2>
+    <p>No complex configuration. No subscription walls. Five simple steps between you and total call clarity.</p>
+  </div>
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-circle">
+        <span class="step-num">1</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+      </div>
+      <h3>Install the App</h3>
+      <p>Download from Google Play or directly as an APK. Supports all Android devices.</p>
+    </div>
+    <div class="step">
+      <div class="step-circle">
+        <span class="step-num">2</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <polyline points="9 12 11 14 15 10"/>
+        </svg>
+      </div>
+      <h3>Grant Permissions</h3>
+      <p>Allow access to contacts, phone, and notifications so VIP Ringer can override silent mode for your VIPs.</p>
+    </div>
+    <div class="step">
+      <div class="step-circle">
+        <span class="step-num">3</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </div>
+      <h3>Build Your VIP List</h3>
+      <p>Select contacts from your address book and designate them as VIPs. Family, Doctor or Boss.</p>
+    </div>
+    <div class="step">
+      <div class="step-circle">
+        <span class="step-num">4</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="6" y1="5" x2="6" y2="19"/><line x1="18" y1="5" x2="18" y2="19"/>
+          <rect x="8" y="3" width="8" height="18" rx="2"/>
+        </svg>
+      </div>
+      <h3>Enable Silent Mode</h3>
+      <p>Put your phone on silent, vibrate or Do Not Disturb as usual. VIP Ringer operates silently in the background.</p>
+    </div>
+    <div class="step">
+      <div class="step-circle">
+        <span class="step-num">5</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          <path d="M2 8c0-2.2.7-4.3 2-6" stroke-opacity="0.45"/>
+          <path d="M22 8a10 10 0 0 0-2-6" stroke-opacity="0.45"/>
+        </svg>
+      </div>
+      <h3>VIPs Ring Through</h3>
+      <p>When a VIP calls, your phone rings at full volume. Nothing else. Intelligent, precise, and fully in your control.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="features-layout">
+    <div class="features-intro">
+      <div class="section-tag">Features</div>
+      <h2>Everything you need. Nothing you don't.</h2>
+      <p>VIP Ringer is engineered to solve one problem with precision ensuring your most important calls always reach you without disrupting your focus.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          </svg>
+        </div>
+        <h3>VIP Override Ring</h3>
+        <p>Selected contacts ring at full volume regardless of silent, vibrate, or DND settings. No exceptions.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <h3>VIP Contact List</h3>
+        <p>Add, remove, or reorganize your VIP list at any time. No limits. You define exactly who matters most.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h3>Private by Design</h3>
+        <p>All data stays on your device. No cloud sync, no analytics, no advertising. Your VIP list is entirely yours.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </div>
+        <h3>Night Mode VIP</h3>
+        <p>Set quiet hours so only true emergencies break through at night. Sleep soundly, confident you won't miss what matters.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <h3>Instant Activation</h3>
+        <p>Toggle VIP Mode on or off instantly with a single tap directly from the app.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="6" width="18" height="12" rx="2"/>
+            <line x1="23" y1="10" x2="23" y2="14" stroke-width="3"/>
+            <line x1="7" y1="12" x2="11" y2="12"/><polyline points="10 9 13 12 10 15"/>
+          </svg>
+        </div>
+        <h3>Zero Battery Impact</h3>
+        <p>VIP Ringer uses zero additional battery. It relies on native system APIs with no background processes draining your phone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APP PREVIEW -->
+<section id="preview">
+  <div class="preview-text">
+    <div class="section-tag">The App</div>
+    <h2>Thoughtfully designed for clarity</h2>
+    <p>A focused interface that keeps the most important controls front and center. No clutter. No confusion. Just your VIPs, perfectly managed.</p>
+    <div class="check-list">
+      <div class="check-item">
+        <div class="check-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <strong>One-tap VIP assignment</strong>
+          <span>Select directly from your existing contacts. No re-entry required</span>
+        </div>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <strong>Zero battery usage</strong>
+          <span>Uses native system APIs only. No background processes, no battery drain at all</span>
+        </div>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <strong>Private by design</strong>
+          <span>All data stays on your device. No cloud sync, no tracking, no ads</span>
+        </div>
+      </div>
+      <div class="check-item">
+        <div class="check-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <strong>Full Android support</strong>
+          <span>Native integration with system-level notification APIs on Android 8.0+</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phone-scene">
+    <div class="phone">
+      <div class="phone-island"></div>
+      <div class="pscreen">
+        <div class="ps-nav">
+          <div class="ps-nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <span class="ps-app-name">VIP RINGER</span>
+          <div class="ps-nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M16.24 7.76a6 6 0 0 1 0 8.49"/></svg>
+          </div>
+        </div>
+        <div class="ps-bell-wrap">
+          <div class="ps-bell">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+          </div>
+        </div>
+        <div class="ps-status">
+          <span class="ps-status-badge">
+            <span class="ps-dot"></span>
+            VIP MODE ACTIVE
+          </span>
+        </div>
+        <div class="ps-list">
+          <div class="ps-row">
+            <div class="ps-ava" style="background:linear-gradient(135deg,#6b21e8,#a855f7);color:#fff;">M</div>
+            <div class="ps-info"><strong>Mom</strong><small>+1 (555) 010-2030</small></div>
+            <div class="ps-vip"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> VIP</div>
+          </div>
+          <div class="ps-row">
+            <div class="ps-ava" style="background:linear-gradient(135deg,#b45309,#d97706);color:#fff;">S</div>
+            <div class="ps-info"><strong>Sarah (Boss)</strong><small>+1 (555) 020-3040</small></div>
+            <div class="ps-vip"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> VIP</div>
+          </div>
+          <div class="ps-row">
+            <div class="ps-ava" style="background:linear-gradient(135deg,#166534,#16a34a);color:#fff;">D</div>
+            <div class="ps-info"><strong>Dr. Ahmad</strong><small>+1 (555) 030-4050</small></div>
+            <div class="ps-vip"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> VIP</div>
+          </div>
+          <div class="ps-row" style="opacity:0.3;">
+            <div class="ps-ava" style="background:#1f1f2e;color:rgba(255,255,255,0.3);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            </div>
+            <div class="ps-info"><strong style="color:rgba(255,255,255,0.4);">Unknown Caller</strong><small>+1 (555) 999-0000</small></div>
+            <span class="ps-muted">Silent</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-tag" style="justify-content:center;">FAQ</div>
+  <h2>Frequently Asked Questions</h2>
+  <p>Everything you need to know before downloading.</p>
+  <div class="faq-wrap">
+    <div class="faq-item">
+      <button class="faq-trigger">
+        Does VIP Ringer work with Silent, Vibrate, and Do Not Disturb modes?
+        <span class="faq-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
+      <div class="faq-body"><p>Yes. VIP Ringer works with your phone’s notification system so selected VIP contacts can still ring at full volume even when your phone is on Silent, Vibrate, or Do Not Disturb (DND) mode.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-trigger">
+        Is VIP Ringer free to use?
+        <span class="faq-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
+      <div class="faq-body"><p>The core features, VIP contact list, call override, smart silent mode, and night mode are completely free. There are no mandatory subscriptions, no paywalled essential features, and no ads within the application.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-trigger">
+        How many contacts can be on my VIP list?
+        <span class="faq-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
+      <div class="faq-body"><p>There is no fixed limit. You can add as many or as few contacts as you wish. The VIP list is entirely customizable and can be edited at any time directly within the app.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-trigger">
+        Will it drain my battery?
+        <span class="faq-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
+      <div class="faq-body"><p>Not at all. VIP Ringer has zero battery impact. It relies entirely on native system APIs to detect and override calls. No background processes, no extra drain.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-trigger">
+        Is my contact information kept private?
+        <span class="faq-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
+      <div class="faq-body"><p>Completely. VIP Ringer operates entirely on-device. Your contacts, VIP designations, and call history are never uploaded to any external server, shared with third parties, or used for analytics. Privacy is a core architectural principle.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-trigger">
+        What devices are supported?
+        <span class="faq-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
+      <div class="faq-body"><p>VIP Ringer supports Android 8.0 (Oreo) and above. The APK direct download is available for Android users who prefer installing outside of the Play Store.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section id="download">
+  <div class="download-inner">
+    <div class="section-tag" style="justify-content:center;">Download</div>
+    <h2>Your VIPs deserve to reach you</h2>
+    <p>Free to download. Available on Google Play and as a direct APK. Setup takes under two minutes.</p>
+    <div class="store-btns">
+      <a href="#" class="store-btn">
+        <svg viewBox="0 0 24 24" fill="var(--white)" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3.18 23.76c.3.17.64.24.99.19l12.2-7.05-2.55-2.54-10.64 9.4zm-1.17-21c-.12.26-.18.56-.18.88v18.72c0 .32.06.61.18.87l.08.08 10.48-10.48v-.15L2.09 2.68l-.08.08zM20.55 10.4l-2.92-1.68-2.82 2.82 2.82 2.82 2.93-1.69c.84-.48.84-1.27-.01-1.77zM4.17.24L16.38 7.3l-2.56 2.55L3.18.47c.28-.18.64-.24.99-.23z"/>
+        </svg>
+        <div class="sb-text">
+          <small>Get it on</small>
+          <strong>Google Play</strong>
+        </div>
+      </a>
+      <a href="#" class="store-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        <div class="sb-text">
+          <small>Get it via</small>
+          <strong>APK Download</strong>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-left">
+    <a href="#" class="logo">
+      <div class="logo-mark">
+        <img src="https://res.cloudinary.com/dxekyuabh/image/upload/v1773227487/Untitled_design_19_meiwrm.png" alt="VIP Ringer Logo">
+      </div>
+      <span class="logo-text"><em>VIP</em> Ringer</span>
+    </a>
+    <p>© 2026 VIP Ringer. All rights reserved.</p>
+  </div>
+  <p style="font-size:0.75rem;color:rgba(248,246,255,0.4);">Developed by <a href="https://husnainmazhar.site" target="_blank" rel="noopener" style="color:var(--gold-light);text-decoration:none;">Husnain Mazhar</a></p>
+</footer>
+
+<div class="toast" id="toast">Coming Soon!</div>
+
+<button class="scroll-top" id="scrollTop" aria-label="Scroll to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"/>
+  </svg>
+</button>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.step, .feat-card').forEach(el => observer.observe(el));
+
+document.querySelectorAll('.faq-item').forEach(item => {
+  item.querySelector('.faq-trigger').addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('nav ul a:not(.btn-nav)');
+const scrollTopBtn = document.getElementById('scrollTop');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#' + current ? 'var(--white)' : '';
+  });
+  scrollTopBtn.classList.toggle('show', window.scrollY > 400);
+}, { passive: true });
+scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+document.querySelectorAll('.store-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
+  });
+});
+</script>
+</body>
+</html>
